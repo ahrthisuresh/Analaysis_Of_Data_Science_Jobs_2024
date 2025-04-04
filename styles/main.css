@@ -1,32 +1,57 @@
-/* styles/main.css */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', sans-serif;
     margin: 0;
-    background: #f5f5f5;
+    padding: 0;
+    background: #f4f4f4;
   }
   
-  header {
-    background: #222;
-    color: #fff;
-    padding: 1rem;
+  nav {
+    background: #333;
+    padding: 10px;
     text-align: center;
   }
   
   nav a {
-    margin: 0 1rem;
-    color: #00bcd4;
+    color: white;
+    margin: 0 15px;
     text-decoration: none;
   }
   
-  main {
+  header {
+    padding: 2rem;
+    text-align: center;
+    background-color: #fff;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .cards {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
     padding: 2rem;
   }
   
-  #skillsChart, #timelineChart, #mapChart {
+  .card {
     background: white;
+    padding: 1.5rem;
+    margin: 1rem;
+    width: 250px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border-radius: 6px;
+    text-align: center;
+  }
+  
+  .card a {
+    display: block;
+    margin-top: 1rem;
+    text-decoration: none;
+    color: #007acc;
+  }
+  
+  footer {
+    text-align: center;
     padding: 1rem;
-    border-radius: 10px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    min-height: 400px;
+    background: #eee;
+    font-size: 0.9rem;
   }
   

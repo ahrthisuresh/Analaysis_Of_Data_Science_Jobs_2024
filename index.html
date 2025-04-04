@@ -1,24 +1,50 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Job Dashboard</title>
+  <title>Job Market Dashboard</title>
   <link rel="stylesheet" href="styles/main.css">
+  <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
 <body>
+  <nav>
+    <a href="index.html">Home</a> |
+    <a href="skills.html">Skills</a> |
+    <a href="timeline.html">Timeline</a> |
+    <a href="map.html">Map</a>
+  </nav>
+
   <header>
-    <h1>Job Market Dashboard</h1>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="skills.html">Skills</a>
-      <a href="timeline.html">Timeline</a>
-      <a href="map.html">Map</a>
-    </nav>
+    <h1>Job Market Insights Dashboard</h1>
+    <p>Explore job market trends, skill demands, and opportunities across industries using interactive data visualizations built with D3.js.</p>
   </header>
+
   <main>
-    <h2>Welcome to the Job Market Dashboard</h2>
-    <p>Use the navigation above to explore job trends, skill demand, and more.</p>
+    <section class="cards">
+      <div class="card">
+        <h2>🔧 Top Skills</h2>
+        <p>See which technical and soft skills are most in demand.</p>
+        <a href="skills.html">View Skills →</a>
+      </div>
+
+      <div class="card">
+        <h2>📅 Job Trends</h2>
+        <p>Explore how job postings change over time.</p>
+        <a href="timeline.html">View Timeline →</a>
+      </div>
+
+      <div class="card">
+        <h2>🌍 Locations</h2>
+        <p>Discover where the jobs are — by country or city.</p>
+        <a href="map.html">View Map →</a>
+      </div>
+    </section>
   </main>
+
+  <footer>
+    <p>Built with 💻 by [Your Name] using D3.js</p>
+  </footer>
+
+  <script src="js/utils.js"></script>
 </body>
 </html>
