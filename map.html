@@ -1,25 +1,22 @@
-<!-- map.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Job Locations</title>
   <link rel="stylesheet" href="styles/main.css">
+  <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
 <body>
-  <header>
-    <h1>Job Locations Map</h1>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="skills.html">Skills</a>
-      <a href="timeline.html">Timeline</a>
-      <a href="map.html">Map</a>
-    </nav>
-  </header>
-  <main>
-    <div id="mapChart">Map visualization will go here.</div>
-  </main>
-  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <nav>
+    <a href="index.html">Home</a> |
+    <a href="skills.html">Skills</a> |
+    <a href="timeline.html">Timeline</a> |
+    <a href="map.html">Map</a>
+  </nav>
+
+  <h1>Job Distribution by Country</h1>
+  <div id="mapChart"></div>
+
   <script src="js/utils.js"></script>
   <script src="js/map.js"></script>
 </body>
