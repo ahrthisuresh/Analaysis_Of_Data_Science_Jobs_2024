@@ -1,7 +1,12 @@
 // js/map.js
-d3.csv("data/dashboard_cleaned_data.csv").then(data => {
-    const countryCounts = d3.rollup(data, v => v.length, d => d.country);
-    const topCountries = Array.from(countryCounts, ([country, count]) => ({ country, count }))
+d3.csv("data/location_data.csv").then(data => {
+    console.log("Location data loaded:", data);
+    data.forEach(d => {
+      d.latitude = +d.latitude;
+      d.longitude = +d.longitude;
+    });
+    const locationCounts = d3.rollup(data, v => v.length, d => d.location);
+    const topLocations = Array.from(locationCounts, ([location, count]) => ({ country: location, count }))
       .sort((a, b) => d3.descending(a.count, b.count))
       .slice(0, 10);
   
@@ -15,17 +20,17 @@ d3.csv("data/dashboard_cleaned_data.csv").then(data => {
       .attr("height", height);
   
     const x = d3.scaleLinear()
-      .domain([0, d3.max(topCountries, d => d.count)])
+      .domain([0, d3.max(topLocations, d => d.count)])
       .range([margin.left, width - margin.right]);
   
     const y = d3.scaleBand()
-      .domain(topCountries.map(d => d.country))
+      .domain(topLocations.map(d => d.country))
       .range([margin.top, height - margin.bottom])
       .padding(0.1);
   
     svg.append("g")
       .selectAll("rect")
-      .data(topCountries)
+      .data(topLocations)
       .join("rect")
       .attr("x", x(0))
       .attr("y", d => y(d.country))
@@ -40,5 +45,4 @@ d3.csv("data/dashboard_cleaned_data.csv").then(data => {
     svg.append("g")
       .attr("transform", `translate(${margin.left},0)`)
       .call(d3.axisLeft(y));
-  });
-  
+});
