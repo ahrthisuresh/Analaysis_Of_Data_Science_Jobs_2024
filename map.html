@@ -5,6 +5,8 @@
   <title>Job Locations</title>
   <link rel="stylesheet" href="styles/main.css">
   <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://d3js.org/topojson.v3.min.js"></script> <!-- add this -->
+
 </head>
 <body>
   <nav>
@@ -12,12 +14,15 @@
     <a href="skills.html">Skills</a> |
     <a href="timeline.html">Timeline</a> |
     <a href="map.html">Map</a>
+    <a href="industry.html">Industry</a>
+
   </nav>
 
   <h1>Job Distribution by Country</h1>
   <div id="mapChart"></div>
 
   <script src="js/utils.js"></script>
+  <script src="https://unpkg.com/topojson@3"></script>
   <script src="js/map.js"></script>
 </body>
 </html>
