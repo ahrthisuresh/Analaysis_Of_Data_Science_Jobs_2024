@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Job Market Dashboard</title>
+  <link rel="stylesheet" href="styles/main.css">
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <!-- <header><h1>Data‑Science Job Market 2024 Dashboard</h1></header> -->
+    <nav>
+        <a href="index.html">Home</a> |
+        <a href="skills.html">Skills</a> |
+        <a href="timeline.html">Timeline</a> |
+        <a href="map.html">Map</a> |
+        <a href="industry.html">Industry</a>
+        <a href="dashboard.html">Dashboard</a>
+    </nav>
+
+    <!-- a simple 2×2 CSS grid -->
+    <main class="grid">
+        <section id="mapChart"       class="card"></section>
+        <section id="timelineChart"  class="card"></section>
+        <section id="skillsChart"    class="card"></section>
+        <section id="industryChart"  class="card"></section>
+    </main>
+      
+  
+    <!-- JS bundle order: d3 first, then utils, then each chart -->
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/map.js"></script>
+    <script src="js/timeline.js"></script>
+    <script src="js/skills.js"></script>
+    <script src="js/industry.js"></script>
+  </body>
+  
+</html>

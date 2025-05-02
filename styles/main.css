@@ -31,7 +31,7 @@ body {
     padding: 2rem;
   }
   
-  .card {
+  /* .card {
     background: white;
     padding: 1.5rem;
     margin: 1rem;
@@ -39,7 +39,7 @@ body {
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     border-radius: 6px;
     text-align: center;
-  }
+  } */
   
   .card a {
     display: block;
@@ -54,4 +54,57 @@ body {
     background: #eee;
     font-size: 0.9rem;
   }
+
+  main.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+    gap: 1rem;
+  }
+  /* .card { background: #fff; border-radius: 8px; padding: 0.5rem; } */
+
+  .card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 0.5rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+    /* let the grid decide width; just ensure the card grows with its content */
+    width: auto;
+    position: relative;   /* creates its own stacking context */
+    margin-top: 10px;
+  }
+  
+  nav {
+    position: relative;      /* keeps it above absolutely‑positioned map layers */
+    z-index: 10;
+  }
+
+  nav a {
+    color: white;            /* ensure link is visible on dark bar */
+    display: inline-block;   /* guarantees width/height */
+    padding: 0 2px;
+  }
+
+  
+  .chart-frame {
+    max-width: 900px;          /* keeps chart from spanning giant monitors   */
+    margin: 2rem auto 3rem;    /* centers and gives breathing space         */
+    padding: 0 10px;           /* tiny side padding for small screens       */
+  }
+
+  .chart-frame svg {
+    width: 100% !important;    /* make every SVG fluid inside the frame     */
+    height: auto !important;   /* preserve aspect ratio                     */
+  }
+
+ 
+  .chart-frame text {
+    font-size: clamp(11px, 1.4vw, 16px);
+  }
+  .chart-frame .axis text {
+    font-size: clamp(10px, 1.2vw, 14px);
+  }
+
+
+
+  
   

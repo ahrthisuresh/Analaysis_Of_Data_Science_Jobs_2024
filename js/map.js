@@ -1,104 +1,118 @@
-Promise.all([
-  d3.json("data/world.geojson"),
-  d3.csv("data/location_data.csv")
-]).then(([worldData, jobData]) => {
-  const width = 960;
-  const height = 600;
-
-  console.log("Loaded job data:", jobData.slice(0, 5));
-
-  const countryAliases = {
-    "USA": "United States",
-    "US": "United States",
-    "U.S.": "United States",
-    "United States of America": "United States",
-    "UK": "United Kingdom",
-    "England": "United Kingdom",
-    "Scotland": "United Kingdom",
-    "Wales": "United Kingdom",
-    "UAE": "United Arab Emirates",
-    "South Korea": "Korea, Republic of",
-    "Russia": "Russian Federation",
-    "Vietnam": "Viet Nam"
+(function () {
+  const CARD_ID = "#mapChart";
+  const FILES = {
+    world: "data/world.geojson",
+    jobs: "data/location_data.csv",
   };
+  const ASPECT = 0.6;
+  const COLOR_SEQ = d3.interpolateBlues;
+  const MARGIN   = { top: 30, right: 30, bottom: 50, left: 60 };
+  function draw() {
+    const container = d3.select(CARD_ID);
+    container.selectAll("svg, .tooltip").remove();
 
-  function extractCountry(location) {
-    const parts = location.split(",").map(p => p.trim());
-    return parts.length >= 3 ? parts[2] : "United States";
+    const width = container.node().clientWidth;
+    const height = width * ASPECT;
+
+    const svg = container.append("svg")
+      .attr("viewBox", `0 0 ${width} ${height}`)
+      .attr("preserveAspectRatio", "xMidYMid meet");
+
+    const tooltip = container.append("div")
+      .attr("class", "tooltip")
+      .style("position", "absolute")
+      .style("pointer-events", "none")
+      .style("background", "rgba(0,0,0,0.75)")
+      .style("color", "#fff")
+      .style("padding", "4px 8px")
+      .style("border-radius", "4px")
+      .style("font", "12px/1.3 sans-serif")
+      .style("visibility", "hidden");
+
+    Promise.all([
+      d3.json(FILES.world),
+      d3.csv(FILES.jobs)
+    ]).then(([world, jobs]) => {
+      const alias = new Map([
+        ["USA", "United States"],
+        ["US", "United States"],
+        ["U.S.", "United States"],
+        ["United States of America", "United States"],
+        ["UK", "United Kingdom"],
+        ["Great Britain", "United Kingdom"],
+        ["England", "United Kingdom"],
+        ["Scotland", "United Kingdom"],
+        ["Wales", "United Kingdom"],
+        ["Russian Federation", "Russia"],
+        ["South Korea", "Korea, Republic of"],
+        ["Republic of Korea", "Korea, Republic of"],
+        ["Vietnam", "Viet Nam"],
+        ["UAE", "United Arab Emirates"]
+      ]);
+
+      const canon = name => alias.get(name) || name.trim();
+      const getCountry = loc => canon(loc.split(",").pop());
+
+      const counts = d3.rollup(jobs, v => v.length, d => getCountry(d.location));
+      const maxCnt = d3.max(counts.values());
+      const color = d3.scaleSequential([1, maxCnt], COLOR_SEQ);
+
+      const projection = d3.geoNaturalEarth1().fitSize([width, height], world);
+      const path = d3.geoPath(projection);
+
+      svg.append("text")
+        .attr("x", width / 2)
+        .attr("y", MARGIN.top / 2)
+        .attr("text-anchor", "middle")
+        .attr("font-size", "18px")
+        .attr("font-weight", "600")
+        .text("Job Distribution by Country");
+
+      svg.append("g")
+        .selectAll("path")
+        .data(world.features)
+        .join("path")
+        .attr("d", path)
+        .attr("fill", d => {
+          const n = counts.get(canon(d.properties.name));
+          return n ? color(n) : "#ccc";
+        })
+        .attr("stroke", "#666")
+        .attr("stroke-width", 0.3)
+        .on("mouseover", (event, d) => {
+          const name = canon(d.properties.name);
+          const n = counts.get(name) || 0;
+          tooltip
+            .style("visibility", "visible")
+            .text(`${name}: ${n ? n + " jobs" : "No jobs data"}`);
+          d3.select(event.currentTarget)
+            .attr("stroke-width", 1.2)
+            .raise();
+          if (window.dispatcher) {
+            window.dispatcher.call("filter", null, { source: "map", country: name });
+          }
+        })
+        .on("mousemove", event => {
+          tooltip
+            .style("top", (event.offsetY + 15) + "px")
+            .style("left", (event.offsetX + 15) + "px");
+        })
+        .on("mouseout", event => {
+          tooltip.style("visibility", "hidden");
+          d3.select(event.currentTarget).attr("stroke-width", 0.3);
+        });
+    });
   }
 
-  // Count job postings per country
-  const countryJobCounts = {};
-  jobData.forEach(d => {
-    const raw = extractCountry(d.location);
-    const country = countryAliases[raw] || raw;
-    countryJobCounts[country] = (countryJobCounts[country] || 0) + 1;
-  });
+  draw();
+  window.addEventListener("resize", draw);
 
-  console.log("Job counts by country:", countryJobCounts);
-  console.log("Countries represented:", Object.keys(countryJobCounts).length);
-
-  const projection = d3.geoNaturalEarth1()
-    .scale(160)
-    .translate([width / 2, height / 2]);
-
-  const path = d3.geoPath().projection(projection);
-
-  const color = d3.scaleOrdinal()
-    .domain(Object.keys(countryJobCounts))
-    .range(d3.schemeCategory10.concat(d3.schemeCategory20));
-
-  const svg = d3.select("#mapChart")
-    .append("svg")
-    .attr("width", width)
-    .attr("height", height);
-
-  const tooltip = d3.select("body")
-    .append("div")
-    .style("position", "absolute")
-    .style("visibility", "hidden")
-    .style("background", "rgba(0,0,0,0.7)")
-    .style("color", "white")
-    .style("padding", "5px 10px")
-    .style("border-radius", "5px")
-    .style("font-size", "13px");
-
-  // Draw countries and color based on job count
-  svg.append("g")
-    .selectAll("path")
-    .data(worldData.features)
-    .enter()
-    .append("path")
-    .attr("d", path)
-    .attr("fill", d => {
-      let name = d.properties.name;
-      if (["United States of America", "USA"].includes(name)) name = "United States";
-      if (["UK", "Great Britain", "England"].includes(name)) name = "United Kingdom";
-      if (name === "Russian Federation") name = "Russia";
-      if (name === "Korea, Republic of") name = "South Korea";
-      if (name === "Viet Nam") name = "Vietnam";
-
-      return countryJobCounts[name] ? color(name) : "#ccc";
-    })
-    .on("mouseover", function (event, d) {
-      let name = d.properties.name;
-      if (["United States of America", "USA"].includes(name)) name = "United States";
-      if (["UK", "Great Britain", "England"].includes(name)) name = "United Kingdom";
-      if (name === "Russian Federation") name = "Russia";
-      if (name === "Korea, Republic of") name = "South Korea";
-      if (name === "Viet Nam") name = "Vietnam";
-
-      const count = countryJobCounts[name] || 0;
-      tooltip.text(`${name}: ${count} job${count !== 1 ? "s" : ""}`);
-      tooltip.style("visibility", "visible");
-      d3.select(this).attr("stroke", "#222").attr("stroke-width", 1.5);
-    })
-    .on("mousemove", function (event) {
-      tooltip.style("top", event.pageY + 10 + "px")
-             .style("left", event.pageX + 10 + "px");
-    })
-    .on("mouseout", function () {
-      tooltip.style("visibility", "hidden");
-      d3.select(this).attr("stroke", null);
+  if (window.dispatcher) {
+    window.dispatcher.on("filter.mapSkill", ({ source, skill }) => {
+      if (!skill || source === "map") return;
+      const card = d3.select("#mapChart");
+      card.style("box-shadow", "0 0 0 3px #ff9800 inset");
+      setTimeout(() => card.style("box-shadow", null), 500);
     });
-});
+  }
+})();
