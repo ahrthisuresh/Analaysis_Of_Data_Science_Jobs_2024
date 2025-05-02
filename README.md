@@ -17,8 +17,8 @@ This repository provides a visualisation of the requisite skillset for a Data sc
     👉 http://localhost:8000
 
 ## 📁 Project Structure
-index.html, skills.html, map.html, etc. — individual pages
-dashboard.html — combined 4-panel dashboard
-data/ — datasets
-js/ — all visualization scripts
-styles/ — global stylesheet
+index.html, skills.html, map.html, etc. — individual pages  
+dashboard.html — combined 4-panel dashboard  
+data/ — datasets  
+js/ — all visualization scripts  
+styles/ — global stylesheet  
