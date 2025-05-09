@@ -5,6 +5,22 @@
   const MARGIN   = { top: 40, right: 20, bottom: 50, left: 160 };
 
   let currentCountry = null;
+  let tooltip;
+  
+  // Create tooltip once
+  tooltip = d3.select("body")
+    .append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0)
+    .style("position", "fixed")
+    .style("background", "white")
+    .style("border", "1px solid #ddd")
+    .style("border-radius", "4px")
+    .style("padding", "8px")
+    .style("pointer-events", "none")
+    .style("font-family", "Roboto, sans-serif")
+    .style("box-shadow", "0 2px 4px rgba(0,0,0,0.1)");
+
 
   function draw(country = null) {
     currentCountry = country;
@@ -83,6 +99,32 @@
               .attr("height", y.bandwidth())
               .attr("width", 0)
               .attr("fill", d => color(d.skill))
+              .on("mouseover", function(event, d) {
+                tooltip.transition().duration(200).style("opacity", 0.9);
+              })
+              .on("mousemove", function(event, d) {
+                const bbox = tooltip.node().getBoundingClientRect();
+                let left = event.clientX + 15;
+                let top = event.clientY + 15;
+
+                // Right edge check
+                if (left + bbox.width > window.innerWidth) {
+                  left = event.clientX - bbox.width - 15;
+                }
+
+                // Bottom edge check
+                if (top + bbox.height > window.innerHeight) {
+                  top = event.clientY - bbox.height - 15;
+                }
+
+                tooltip
+                  .html(`${d.skill}<br><strong>${d.cnt}</strong> postings`)
+                  .style("left", `${left}px`)
+                  .style("top", `${top}px`);
+              })
+              .on("mouseout", function(d) {
+                tooltip.transition().duration(500).style("opacity", 0);
+              })
               .transition().duration(750)
                 .attr("width", d => x(d.cnt)),
             update => update.transition().duration(750)

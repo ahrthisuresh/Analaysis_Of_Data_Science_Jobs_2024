@@ -7,9 +7,23 @@
   const ASPECT = 0.55;
   const COLOR_SEQ = d3.interpolateBlues;
   const MARGIN   = { top: 30, right: 30, bottom: 50, left: 60 };
+  const tooltip = d3.select("body")
+      .append("div")
+      .attr("class", "tooltip")
+      .style("position", "fixed")
+      .style("background", "rgba(0,0,0,0.85)")
+      .style("color", "white")
+      .style("padding", "8px 16px")
+      .style("border-radius", "4px")
+      .style("font", "14px Roboto, sans-serif")
+      .style("pointer-events", "none")
+      .style("opacity", 0)
+      .style("transition", "opacity 0.2s")
+      .style("z-index", "1000");
+  
   function draw() {
     const container = d3.select(CARD_ID);
-    container.selectAll("svg, .tooltip").remove();
+    container.selectAll("svg").remove();
 
     const width = container.node().clientWidth;
     const height = width * ASPECT;
@@ -51,11 +65,11 @@
       ]);
 
       const canon = name => alias.get(name) || name.trim();
-      const getCountry = loc => canon(loc.split(",").pop());
+      const getCountry = loc => canon(loc.split(",").pop()?.trim());
 
       const counts = d3.rollup(jobs, v => v.length, d => getCountry(d.location));
-      const maxCnt = d3.max(counts.values());
-      const color = d3.scaleSequential([1, maxCnt], COLOR_SEQ);
+      const maxCnt = d3.max(counts.values()) || 1;
+      const color = d3.scaleSequential([0, maxCnt], COLOR_SEQ);
 
       const projection = d3.geoNaturalEarth1().fitSize([width, height], world);
       const path = d3.geoPath(projection);
@@ -79,7 +93,20 @@
         })
         .attr("stroke", "#666")
         .attr("stroke-width", 0.3)
-        .on("mouseover", (event, d) => {
+        .on("mouseover", function(event, d) {
+          // Show tooltip
+          tooltip.style("opacity", 0.9);
+          
+          // Get country data
+          const countryName = canon(d.properties.name);
+          const jobCount = counts.get(countryName) || 0;
+
+          // Update tooltip content
+          tooltip.html(`
+            <div style="font-weight: 500; margin-bottom: 4px;">${countryName}</div>
+            <div>${jobCount.toLocaleString()} job${jobCount !== 1 ? 's' : ''}</div>
+          `);
+
           const name = canon(d.properties.name);
           const n = counts.get(name) || 0;
           tooltip
