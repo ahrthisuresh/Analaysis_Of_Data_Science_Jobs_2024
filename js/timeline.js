@@ -60,7 +60,7 @@
       .x(d => x(d.date))
       .y(d => y(d.count));
 
-    addTitle(svg, width, `${currentCountry} Job Postings Over Time`);
+    // addTitle(svg, width, `${currentCountry} Job Postings Over Time`);
 
     svg.append("path")
       .datum(data)

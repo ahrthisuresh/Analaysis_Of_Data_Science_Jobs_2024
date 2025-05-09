@@ -1,65 +1,213 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8" />
+  <link rel="apple-touch-icon" sizes="76x76" href="assets/img/apple-icon.png" />
+  <link rel="icon" type="image/png" href="assets/img/favicon.png" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <title>Job Market Dashboard</title>
-  <link rel="stylesheet" href="styles/main.css">
-  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+  <!-- Fonts and icons -->
+  <link
+    href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons"
+    rel="stylesheet"
+  />
+  <link href="assets/css/nucleo-icons.css" rel="stylesheet" />
+  <link href="assets/css/nucleo-svg.css" rel="stylesheet" />
+
+  <!-- Material Dashboard CSS -->
+  <link href="assets/css/material-dashboard.css" rel="stylesheet" />
+
+  <!-- Palette overrides from the Material Dashboard reference -->
+  <style>
+    :root {
+      --bs-primary:    #1d3a6b; /* purple */
+      --bs-info:       #02262b; /* cyan */
+      --bs-success:    #4caf50; /* green */
+      --bs-warning:    #ff9800; /* orange */
+      --bs-danger:     #f44336; /* red */
+    }
+    /* Make `.text-primary` and `.btn-primary` use our new primary */
+    .text-primary,
+    .nav-link.active,
+    a.text-primary:hover {
+      color: var(--bs-primary) !important;
+    }
+    .btn-primary {
+      background-color: var(--bs-primary);
+      border-color: var(--bs-primary);
+    }
+    .btn-primary:hover {
+      background-color: darken(var(--bs-primary), 10%);
+    }
+    /* Optional: tint navbar-brand */
+    .navbar-brand {
+      color: var(--bs-primary) !important;
+    }
+  </style>
+
+  <!-- Offset for fixed sidenav -->
+  <style>
+    :root {
+      --sidenav-width: 275px;
+    }
+    body { margin: 0; padding: 0; }
+    .main-content { margin-left: var(--sidenav-width); }
+    .fixed-start  { width: var(--sidenav-width); }
+  </style>
 </head>
-<body>
-  <nav>
-    <a href="index.html">Home</a> |
-    <a href="skills.html">Skills</a> |
-    <a href="timeline.html">Timeline</a> |
-    <a href="map.html">Map</a> |
-    <a href="industry.html">Industry</a> |
-    <a href="dashboard.html">Dashboard</a>
-  </nav>
 
-  <header>
-    <h1>Job Market Insights Dashboard</h1>
-    <p>Explore job market trends, skill demands, and opportunities across industries using interactive data visualizations built with D3.js.</p>
-  </header>
+<body class="g-sidenav-show bg-gray-100">
+  <!-- Fixed Vertical Sidenav -->
+  <aside
+    class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl bg-white shadow-lg fixed-start"
+    id="sidenav-main"
+  >
+    <div class="sidenav-header p-3">
+      <a class="navbar-brand m-0" href="index.html">
+        <span class="font-weight-bold">Dashboard Description</span>
+      </a>
+    </div>
+    <hr class="horizontal dark m-0" />
+    <div class="collapse navbar-collapse w-auto p-3">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <p class="text-sm mb-0">
+            Welcome to the Job Market Dashboard!<br /><br />
+            Here you’ll find interactive views of:<br />
+            • Top skills in demand<br />
+            • Job posting trends over time<br />
+            • Geographic distributions<br />
+            • Industry hiring leaders<br /><br />
+            Click any card on the right to dive in.
+          </p>
+        </li>
+      </ul>
+    </div>
+  </aside>
+  <!-- End Fixed Sidenav -->
 
-  <main>
-    <section class="cards">
-      <div class="card">
-        <h2>🔧 Top Skills</h2>
-        <p>See which technical and soft skills are most in demand.</p>
-        <a href="skills.html">View Skills →</a>
+  <!-- Main Content -->
+  <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
+    <!-- Top Navbar -->
+    <nav
+      class="navbar navbar-main navbar-expand-lg px-0 mx-4 bg-white shadow-sm border-radius-xl mt-4"
+      id="navbarBlur"
+      data-scroll="false"
+    >
+      <div class="container-fluid py-1 px-3">
+        <a class="navbar-brand font-weight-bold" href="index.html">Job Market Dashboard</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse"
+                data-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false"
+                aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="mainNavbar">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item"><a class="nav-link" href="skills.html">Skills</a></li>
+            <li class="nav-item"><a class="nav-link" href="timeline.html">Timeline</a></li>
+            <li class="nav-item"><a class="nav-link" href="map.html">Map</a></li>
+            <li class="nav-item"><a class="nav-link" href="industry.html">Industry</a></li>
+            <li class="nav-item"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
+          </ul>
+        </div>
       </div>
+    </nav>
+    <!-- End Top Navbar -->
 
-      <div class="card">
-        <h2>📅 Job Trends</h2>
-        <p>Explore how job postings change over time.</p>
-        <a href="timeline.html">View Timeline →</a>
+    <div class="container-fluid py-4">
+      <div class="row gx-4 gy-4">
+        <!-- Top Skills card -->
+        <div class="col-lg-3 col-md-6">
+          <div class="card h-100 shadow-sm">
+            <div class="card-body">
+              <h6 class="card-title">🔧 Top Skills</h6>
+              <p class="card-text text-sm">
+                See which technical and soft skills are most in demand.
+              </p>
+              <a href="skills.html" class="text-primary text-sm font-weight-medium"
+                >View Skills →</a
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Job Trends card -->
+        <div class="col-lg-3 col-md-6">
+          <div class="card h-100 shadow-sm">
+            <div class="card-body">
+              <h6 class="card-title">📅 Job Trends</h6>
+              <p class="card-text text-sm">
+                Explore how job postings change over time.
+              </p>
+              <a href="timeline.html" class="text-primary text-sm font-weight-medium"
+                >View Timeline →</a
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Locations card -->
+        <div class="col-lg-3 col-md-6">
+          <div class="card h-100 shadow-sm">
+            <div class="card-body">
+              <h6 class="card-title">🌍 Locations</h6>
+              <p class="card-text text-sm">
+                Discover where the jobs are — by country or city.
+              </p>
+              <a href="map.html" class="text-primary text-sm font-weight-medium"
+                >View Map →</a
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Industries card -->
+        <div class="col-lg-3 col-md-6">
+          <div class="card h-100 shadow-sm">
+            <div class="card-body">
+              <h6 class="card-title">🏭 Industries</h6>
+              <p class="card-text text-sm">
+                Which industries are leading the hiring wave?
+              </p>
+              <a href="industry.html" class="text-primary text-sm font-weight-medium"
+                >View Industry →</a
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Linked Dashboard (full width) -->
+        <div class="col-12">
+          <div class="card h-100 shadow-lg">
+            <div class="card-body">
+              <h6 class="card-title">📊 Linked Dashboard</h6>
+              <p class="card-text text-sm">
+                See all four views together with live cross-filtering.
+              </p>
+              <a
+                href="dashboard.html"
+                class="btn btn-primary btn-sm mt-2"
+                role="button"
+                >Open Dashboard</a
+              >
+            </div>
+          </div>
+        </div>
       </div>
-
-      <div class="card">
-        <h2>🌍 Locations</h2>
-        <p>Discover where the jobs are — by country or city.</p>
-        <a href="map.html">View Map →</a>
-      </div>
-
-      <div class="card">
-        <h2>🏭 Industries</h2>
-        <p>Which industries are leading the hiring wave?</p>
-        <a href="industry.html">View Industry →</a>
-      </div>
-
-      <div class="card">
-        <h2>📊 Linked Dashboard</h2>
-        <p>See all four views together with live cross‑filtering.</p>
-        <a href="dashboard.html">Open Dashboard →</a>
-      </div>
-
-    </section>
+    </div>
   </main>
+  <!-- End Main Content -->
 
-  <footer>
-    <p>Built with D3.js</p>
-  </footer>
-
-  <script src="js/utils.js"></script>
+  <!-- Core JS Files -->
+  <script src="assets/js/core/popper.min.js"></script>
+  <script src="assets/js/core/bootstrap.min.js"></script>
+  <script src="assets/js/plugins/perfect-scrollbar.min.js"></script>
+  <script src="assets/js/plugins/smooth-scrollbar.min.js"></script>
+  <!-- D3 (if needed) -->
+  <script src="https://d3js.org/d3.v6.min.js"></script>
+  <!-- Material Dashboard JS -->
+  <script src="assets/js/material-dashboard.min.js"></script>
 </body>
 </html>

@@ -2,7 +2,7 @@
 (function () {
   const CARD_ID  = "#industryChart";
   const CSV_FILE = "data/filtered_dashboard_data.csv";
-  const ASPECT   = 0.6;
+  const ASPECT   = 0.4;
   const LEGEND_BOX = 12;
   let currentCountry = null;
 
@@ -85,7 +85,7 @@
             .attr("x", LEGEND_BOX + 4)
             .attr("y", LEGEND_BOX - 2)
             .text(d.industry)
-            .style("font-size", "12px");
+            .style("font-size", "10px");
         });
 
         // title
@@ -95,11 +95,11 @@
           .attr("text-anchor", "middle")
           .attr("font-size",    "18px")
           .attr("font-weight",  "600")
-          .text(
-            country
-              ? `Industry Distribution in ${country}`
-              : "Global Industry Distribution"
-          );
+          // .text(
+          //   country
+          //     ? `Industry Distribution in ${country}`
+          //     : "Global Industry Distribution"
+          // );
       });
   }
 

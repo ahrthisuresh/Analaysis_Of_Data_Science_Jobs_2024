@@ -1,7 +1,7 @@
 (function () {
   const CARD_ID  = "#skillsChart";
   const CSV_FILE = "data/filtered_dashboard_data.csv";
-  const ASPECT   = 0.6;
+  const ASPECT   = 0.4;
   const MARGIN   = { top: 40, right: 20, bottom: 50, left: 160 };
 
   let currentCountry = null;
@@ -115,11 +115,11 @@
           .attr("text-anchor","middle")
           .attr("font-size",  "18px")
           .attr("font-weight","600")
-          .text(
-            country 
-              ? `Top 10 Skills in ${country}` 
-              : "Top 10 Global Skills"
-          );
+          // .text(
+          //   country 
+          //     ? `Top 10 Skills in ${country}` 
+          //     : "Top 10 Global Skills"
+          // );
       });
   }
 

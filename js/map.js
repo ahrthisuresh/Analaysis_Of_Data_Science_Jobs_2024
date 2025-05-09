@@ -4,7 +4,7 @@
     world: "data/world.geojson",
     jobs: "data/location_data.csv",
   };
-  const ASPECT = 0.6;
+  const ASPECT = 0.55;
   const COLOR_SEQ = d3.interpolateBlues;
   const MARGIN   = { top: 30, right: 30, bottom: 50, left: 60 };
   function draw() {
@@ -66,7 +66,7 @@
         .attr("text-anchor", "middle")
         .attr("font-size", "18px")
         .attr("font-weight", "600")
-        .text("Job Distribution by Country");
+        //  .text("Job Distribution by Country");
 
       svg.append("g")
         .selectAll("path")
@@ -85,6 +85,15 @@
           tooltip
             .style("visibility", "visible")
             .text(`${name}: ${n ? n + " jobs" : "No jobs data"}`);
+            d3.select("#mapTitle")
+            .text(`🌍 ${name}`);
+          d3.select("#timelineTitle")
+            .text(`📈 ${name} Job Postings Over Time`);
+          d3.select("#skillsTitle")
+            .text(`⭐ Top 10 Skills in ${name}`);
+          d3.select("#industryTitle")
+            .text(`📊 Industry Distribution in ${name}`);
+  
           d3.select(event.currentTarget)
             .attr("stroke-width", 1.2)
             .raise();
@@ -97,9 +106,21 @@
             .style("top", (event.offsetY + 15) + "px")
             .style("left", (event.offsetX + 15) + "px");
         })
-        .on("mouseout", event => {
+        .on("mouseout", (event) => {
+          // 1) hide tooltip & un-highlight
           tooltip.style("visibility", "hidden");
           d3.select(event.currentTarget).attr("stroke-width", 0.3);
+    
+          // 2) reset the four titles
+          d3.select("#mapTitle")     .text("🌍 Global Locations");
+          d3.select("#timelineTitle").text("📈 Global Job Postings Over Time");
+          d3.select("#skillsTitle")  .text("⭐ Top 10 Global Skills");
+          d3.select("#industryTitle").text("📊 Global Industry Distribution");
+    
+          // 3) dispatch null country so your other charts redraw globally
+          if (window.dispatcher) {
+            window.dispatcher.call("filter", null, { source: "map", country: null });
+          }
         });
     });
   }

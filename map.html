@@ -1,31 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Job Locations</title>
-  <link rel="stylesheet" href="styles/main.css">
-  <script src="https://d3js.org/d3.v7.min.js"></script>
-  <script src="https://d3js.org/topojson.v3.min.js"></script> <!-- add this -->
+  <meta charset="utf-8" />
+  <link rel="apple-touch-icon" sizes="76x76" href="assets/img/apple-icon.png" />
+  <link rel="icon" type="image/png" href="assets/img/favicon.png" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <title>Locations – Job Market Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
+  <!-- Fonts and icons -->
+  <link
+    href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons"
+    rel="stylesheet"
+  />
+  <link href="assets/css/nucleo-icons.css" rel="stylesheet" />
+  <link href="assets/css/nucleo-svg.css" rel="stylesheet" />
+
+  <!-- Material Dashboard CSS -->
+  <link href="assets/css/material-dashboard.css" rel="stylesheet" />
+
+  <!-- Navy-blue palette & layout overrides -->
+  <style>
+    :root {
+      --bs-primary:    #1d3a6b;
+      --bs-info:       #005f7f;
+      --bs-success:    #006620;
+      --bs-warning:    #cc6600;
+      --bs-danger:     #8b0000;
+      --sidenav-width: 275px;
+    }
+    body { margin: 0; padding: 0; }
+    .main-content { margin-left: var(--sidenav-width); }
+    .fixed-start  { width: var(--sidenav-width); }
+
+    .text-primary,
+    .nav-link.active,
+    a.text-primary:hover {
+      color: var(--bs-primary) !important;
+    }
+    .btn-primary {
+      background-color: var(--bs-primary);
+      border-color: var(--bs-primary);
+    }
+    .btn-primary:hover,
+    .btn-primary:focus {
+      background-color: #000e1f;
+      border-color: #000e1f;
+    }
+    .navbar-brand {
+      color: var(--bs-primary) !important;
+    }
+    /* Constrain the map container */
+    #mapChart {
+      max-width: 1000px;
+      height: 600px;
+      margin: 1rem auto;
+    }
+  </style>
 </head>
-<body>
-  <nav>
-    <a href="index.html">Home</a> |
-    <a href="skills.html">Skills</a> |
-    <a href="timeline.html">Timeline</a> |
-    <a href="map.html">Map</a> |
-    <a href="industry.html">Industry</a> |
-    <a href="dashboard.html">Dashboard</a>
 
-  </nav>
+<body class="g-sidenav-show bg-gray-100">
+  <!-- Fixed Vertical Sidenav -->
+  <aside
+    class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl bg-white shadow-lg fixed-start"
+    id="sidenav-main"
+  >
+    <div class="sidenav-header p-3">
+      <a class="navbar-brand m-0" href="index.html">
+        <span class="font-weight-bold">Dashboard Description</span>
+      </a>
+    </div>
+    <hr class="horizontal dark m-0" />
+    <div class="collapse navbar-collapse w-auto p-3">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <p class="text-sm mb-0">
+            Welcome! This “Locations” view displays a choropleth map of
+            job posting density by country (and/or zoomed into city level).
+            Hover over each region for details, or filter by time in the
+            Timeline dashboard.
+          </p>
+        </li>
+      </ul>
+    </div>
+  </aside>
+  <!-- End Fixed Sidenav -->
 
-  <h1>Job Distribution by Country</h1>
-  <div class="chart-frame">
-    <div id="mapChart"></div>
-  </div>
+  <!-- Main Content -->
+  <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
+    <!-- Top Navbar -->
+    <nav
+      class="navbar navbar-main navbar-expand-lg px-0 mx-4 bg-white shadow-sm border-radius-xl mt-4"
+      id="navbarBlur"
+      data-scroll="false"
+    >
+      <div class="container-fluid py-1 px-3">
+        <a class="navbar-brand font-weight-bold" href="index.html">Job Distribution by Country</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse"
+                data-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false"
+                aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="mainNavbar">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="skills.html">Skills</a></li>
+            <li class="nav-item"><a class="nav-link" href="timeline.html">Timeline</a></li>
+            <li class="nav-item"><a class="nav-link active" href="map.html">Map</a></li>
+            <li class="nav-item"><a class="nav-link" href="industry.html">Industry</a></li>
+            <li class="nav-item"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <!-- End Top Navbar -->
 
+    <div class="container-fluid py-4">
+      <!-- Map chart container -->
+      <div id="mapChart" class="card h-100 shadow-sm p-0">
+        <!-- D3/TopoJSON map will render here -->
+      </div>
+    </div>
+  </main>
+  <!-- End Main Content -->
+
+  <!-- Core JS Files -->
+  <script src="assets/js/core/popper.min.js"></script>
+  <script src="assets/js/core/bootstrap.min.js"></script>
+  <script src="assets/js/plugins/perfect-scrollbar.min.js"></script>
+  <script src="assets/js/plugins/smooth-scrollbar.min.js"></script>
+  <!-- D3.js -->
+  <script src="https://d3js.org/d3.v6.min.js"></script>
+  <!-- Utility functions -->
   <script src="js/utils.js"></script>
-  <script src="https://unpkg.com/topojson@3"></script>
+  <!-- Map chart logic -->
   <script src="js/map.js"></script>
+  <!-- Material Dashboard JS -->
+  <script src="assets/js/material-dashboard.min.js"></script>
 </body>
 </html>
