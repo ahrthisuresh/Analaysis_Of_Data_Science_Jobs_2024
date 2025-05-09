@@ -3,8 +3,7 @@
   const CSV_FILE = "data/job_trend_by_country.csv";
   const ASPECT   = 0.625;
   const MARGIN   = { top: 30, right: 30, bottom: 50, left: 60 };
-
-  let seriesByCountry, allDates;
+  let seriesByCountry, allDates, tooltip,x,y;
   let currentCountry = "Global";
 
   d3.csv(CSV_FILE, row => ({
@@ -14,6 +13,20 @@
   })).then(rows => {
     seriesByCountry = d3.group(rows, d => d.country);
     allDates = d3.extent(rows, d => d.date);
+
+    // Create tooltip once
+    tooltip = d3.select("body")
+      .append("div")
+      .attr("class", "tooltip")
+      .style("opacity", 0)
+      .style("position", "fixed")
+      .style("background-color", "white")
+      .style("border", "solid 1px")
+      .style("border-radius", "5px")
+      .style("padding", "8px")
+      .style("pointer-events", "none")
+      .style("font-family", "Roboto, sans-serif");
+
     draw("Global");
     hookBus();
     window.addEventListener("resize", () => draw(currentCountry));
@@ -48,11 +61,11 @@
       return;
     }
 
-    const x = d3.scaleTime()
+    x = d3.scaleTime()
       .domain(allDates)
       .range([MARGIN.left, width - MARGIN.right]);
 
-    const y = d3.scaleLinear()
+    y = d3.scaleLinear()
       .domain([0, d3.max(data, d => d.count)]).nice()
       .range([height - MARGIN.bottom, MARGIN.top]);
 
@@ -60,7 +73,7 @@
       .x(d => x(d.date))
       .y(d => y(d.count));
 
-    // addTitle(svg, width, `${currentCountry} Job Postings Over Time`);
+    const formatDate = d3.timeFormat("%b %d, %Y");
 
     svg.append("path")
       .datum(data)
@@ -71,11 +84,61 @@
 
     svg.append("g")
       .attr("transform", `translate(0,${height - MARGIN.bottom})`)
-      .call(d3.axisBottom(x).ticks(6).tickSizeOuter(0));
+      .call(d3.axisBottom(x).ticks(6));
 
     svg.append("g")
       .attr("transform", `translate(${MARGIN.left},0)`)
       .call(d3.axisLeft(y).ticks(5));
+
+    const overlay = svg.append("rect")
+      .attr("class", "overlay")
+      .attr("width", width - MARGIN.left - MARGIN.right)
+      .attr("height", height - MARGIN.top - MARGIN.bottom)
+      .attr("x", MARGIN.left)
+      .attr("y", MARGIN.top)
+      .style("opacity", 0)
+      .style("pointer-events", "all")
+      .on("mousemove", mousemove)
+      .on("mouseout", mouseout);
+
+
+    function mousemove(event) {
+      const [xm] = d3.pointer(event);
+      const date = x.invert(xm);
+      const bisect = d3.bisector(d => d.date).left;
+      const index = bisect(data, date, 1);
+      const a = data[index - 1];
+      const b = data[index] || a;
+      const d = date - a.date > b.date - date ? b : a;
+  
+      // Get tooltip dimensions
+      tooltip.html(`${d3.timeFormat("%b %d, %Y")(d.date)}<br><strong>${d.count}</strong> jobs`);
+      const bbox = tooltip.node().getBoundingClientRect();
+  
+      // Calculate position with boundary checks
+      let left = event.clientX + 15;
+      let top = event.clientY + 15;
+  
+      // Right edge check
+      if (left + bbox.width > window.innerWidth) {
+        left = event.clientX - bbox.width - 15;
+      }
+  
+      // Bottom edge check
+      if (top + bbox.height > window.innerHeight) {
+        top = event.clientY - bbox.height - 15;
+      }
+  
+      tooltip
+        .style("left", `${left}px`)
+        .style("top", `${top}px`)
+        .style("opacity", 1);
+    }
+  
+    function mouseout() {
+      tooltip.style("opacity", 0);
+    }
+  
   }
 
   function addTitle(svg, width, text) {
