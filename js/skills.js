@@ -34,6 +34,7 @@
 
     d3.csv(CSV_FILE, d => ({ skill: d.skill, country: d.country }))
       .then(rows => {
+        container.selectAll("*").remove();
         let data = rows;
         if (country) data = rows.filter(r => r.country === country);
 

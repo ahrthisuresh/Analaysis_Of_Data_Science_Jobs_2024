@@ -33,6 +33,7 @@
 
     d3.csv(CSV_FILE, d => ({ industry: d.industry, country: d.country }))
       .then(rows => {
+        container.selectAll("*").remove();
         let data = rows;
         if (country) data = rows.filter(r => r.country === country);
 
